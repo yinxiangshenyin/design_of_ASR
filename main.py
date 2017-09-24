@@ -42,7 +42,6 @@ with tf.Session() as sess:
     print("Start Training")
     sess.run(tf.global_variables_initializer())
     for epoch in range(16):
-        mytrain_data.pointer=0
         for batch in range(n_batch):
             now_time=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             print(now_time)
