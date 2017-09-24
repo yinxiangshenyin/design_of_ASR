@@ -36,7 +36,7 @@ acc=myctc.ctc_accuracy(output,Y,sequence_length)
 optimizer = tf.train.MomentumOptimizer(initial_learning_rate, 0.9).minimize(cost)
 
 print("Design the CTC lost function and the optimizer sucessfully!")
-n_batch = len(mytrain_data.train_mfcc) // batch_size
+n_batch = mytrain_data.wav_max_len // batch_size
 saver=tf.train.Saver()
 with tf.Session() as sess:
     print("Start Training")

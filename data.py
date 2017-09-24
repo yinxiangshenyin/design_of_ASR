@@ -10,6 +10,7 @@ import threading
 from queue import Queue
 import pickle
 import csv
+import time
 from collections import Counter
 class Train_data:
     train_wav_file_path = r'D:\workplace\Python\SpeechRecognition\speech_sample\wav\wav\train'
@@ -17,8 +18,8 @@ class Train_data:
     train_mfcc=[]
     train_label=[]
     encode_dict={}
-    wav_max_len=0
-    label_max_len=0
+    wav_max_len=8911
+    label_max_len=8911
     label_class_num=0
     decode_dict={}
     label_queue = Queue()
@@ -124,7 +125,9 @@ class Train_data:
                     pass
                 else:
                     mfcc_lock.release()
+                    print("mfcc:" + str(i))
                     while True:
+
                         if (mfcc_queue.qsize() == 0):
                             mfcc_lock.acquire()
                             break
@@ -139,7 +142,9 @@ class Train_data:
                     pass
                 else:
                     label_lock.release()
+                    print("label:" + str(i))
                     while True:
+
                         if (label_queue.qsize() == 0):
                             label_lock.acquire()
                             break
@@ -156,9 +161,25 @@ class Train_data:
     #     return np.array(mfcc_list)
     def Data_process(self):
         if os.path.exists(self.save_labels) and os.path.exists(self.save_mfcc) and os.path.exists(self.save_word_class_dict):
-            pass
             # print("Loading data from txt")
             self.label_class_dict=self.Loaddata(self.save_word_class_dict)
+            # count = -1
+            # with open(self.save_mfcc, 'rU') as readline:
+            #     for count, line in enumerate(readline):
+            #         pass
+            #     count += 1
+            #     self.train_mfcc=count
+            #     readline.close()
+            #
+            # count = -1
+            # with open(self.save_labels, 'rU') as readline:
+            #     for count, line in enumerate(readline):
+            #         pass
+            #     count += 1
+            #     self.save_labels = count
+            #     readline.close()
+            #
+            # print(count)
             # self.train_mfcc=self.Loaddata(self.save_mfcc)
             # self.train_label=self.Loaddata(self.save_labels)
             #
@@ -204,7 +225,7 @@ class Train_data:
                     self.label_lock.acquire()
                     for i in range(16):
                         batch_label.append(self.label_queue.get())
-                        self.label_lock.release()
+                    self.label_lock.release()
                     label_ok=True
             if (mfcc_ok == False):
                 if (self.mfcc_queue.qsize() == 16):
@@ -213,6 +234,7 @@ class Train_data:
                         batch_wav.append(self.mfcc_queue.get())
                     self.mfcc_lock.release()
                     mfcc_ok = True
+            time.sleep(0.2)
 
         return batch_wav,batch_label
 
