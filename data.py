@@ -14,7 +14,7 @@ import time
 from collections import Counter
 class Train_data:
     train_wav_file_path = r'D:\workplace\Python\SpeechRecognition\speech_sample\wav\wav\train'
-    train_label_file_path = r'D:\workplace\Python\SpeechRecognition\speech_sample\doc\doc\trans\train.word.txt'
+    train_label_file_path = r'D:\workplace\Python\SpeechRecognition\speech_sample\doc\doc\trans\train_word.txt'
     train_mfcc=[]
     train_label=[]
     encode_dict={}
@@ -148,7 +148,7 @@ class Train_data:
                     pass
                 else:
                     label_lock.release()
-                    print(label_queue.qsize())
+                    print("label:" + str(i))
                     while True:
 
                         if (label_queue.qsize() == 0):
@@ -253,8 +253,8 @@ class Train_data:
     def start_read_data(self):
         self.label_queue.queue.clear()
         self.mfcc_queue.queue.clear()
-        self.read_label_threading = threading.Thread(target=self.readcsvdata_label, args=(self.train_labels,self.label_queue, self.label_lock))
-        self.read_mfcc_threading = threading.Thread(target=self.readcsvdata_mfcc, args=(self.train_mfcc,self.mfcc_queue, self.mfcc_lock))
+        self.read_label_threading = threading.Thread(target=self.readcsvdata_label, args=(self.save_labels,self.label_queue, self.label_lock))
+        self.read_mfcc_threading = threading.Thread(target=self.readcsvdata_mfcc, args=(self.save_mfcc,self.mfcc_queue, self.mfcc_lock))
         self.read_label_threading.start()
         self.read_mfcc_threading.start()
 
