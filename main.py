@@ -38,15 +38,18 @@ optimizer = tf.train.MomentumOptimizer(initial_learning_rate, 0.9).minimize(cost
 print("Design the CTC lost function and the optimizer sucessfully!")
 n_batch = mytrain_data.wav_max_len // batch_size
 saver=tf.train.Saver()
+new_reader=False
 with tf.Session() as sess:
     print("Start Training")
     sess.run(tf.global_variables_initializer())
-    for epoch in range(16):
+    for epoch in range(50):
+        new_reader=True
         for batch in range(n_batch):
             now_time=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             print(now_time)
             print('Batch:'+str(batch))
-            batches_wavs, batches_labels = mytrain_data.Get_next_batch(batch_size)
+            batches_wavs, batches_labels = mytrain_data.Get_next_batch(batch_size,new_reader)
+            new_reader=False
             train_loss,train_acc, _ = sess.run([cost,acc, optimizer,], feed_dict={X: batches_wavs, Y: batches_labels})
             print('Cost:'+str(train_loss))
             print("Accuracy:"+str(train_acc))

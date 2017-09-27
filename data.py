@@ -29,10 +29,12 @@ class Train_data:
     read_label_threading=None
     read_mfcc_threading = None
 
-
     save_mfcc=r'..\data for ASR\save_mfcc.csv'
     save_labels=r'..\data for ASR\save_labels.csv'
     save_word_class_dict=r'..\data for ASR\save_word_class_dict.txt'
+
+    test_mfcc=r'..\data for ASR\test_mfcc.csv'
+    test_labels = r'..\data for ASR\test_labels.csv'
 
 
     #train_data
@@ -131,8 +133,12 @@ class Train_data:
                         if (mfcc_queue.qsize() == 0):
                             mfcc_lock.acquire()
                             break
+        mfcc_lock.release()
+
+
 
     def readcsvdata_label(self,filename, label_queue, label_lock):
+        print(threading.current_thread().getName())
         with open(filename, 'r') as csvfile:
             temp = csv.reader(csvfile)
             label_lock.acquire()
@@ -142,12 +148,16 @@ class Train_data:
                     pass
                 else:
                     label_lock.release()
-                    print("label:" + str(i))
+                    print(label_queue.qsize())
                     while True:
 
                         if (label_queue.qsize() == 0):
                             label_lock.acquire()
                             break
+
+        label_lock.release()
+
+
 
     # def Get_MFCC(self,wav_file_list):
     #     mfcc_list=[]
@@ -163,21 +173,19 @@ class Train_data:
         if os.path.exists(self.save_labels) and os.path.exists(self.save_mfcc) and os.path.exists(self.save_word_class_dict):
             # print("Loading data from txt")
             self.label_class_dict=self.Loaddata(self.save_word_class_dict)
-            # count = -1
-            # with open(self.save_mfcc, 'rU') as readline:
-            #     for count, line in enumerate(readline):
-            #         pass
-            #     count += 1
-            #     self.train_mfcc=count
-            #     readline.close()
-            #
-            # count = -1
-            # with open(self.save_labels, 'rU') as readline:
-            #     for count, line in enumerate(readline):
-            #         pass
-            #     count += 1
-            #     self.save_labels = count
-            #     readline.close()
+            count = -1
+            with open(self.save_mfcc, 'rU') as readline:
+                for count, line in enumerate(readline):
+                    pass
+                count += 1
+                self.wav_max_len=count
+
+            count = -1
+            with open(self.save_labels, 'rU') as readline:
+                for count, line in enumerate(readline):
+                    pass
+                count += 1
+                self.label_max_len = count
             #
             # print(count)
             # self.train_mfcc=self.Loaddata(self.save_mfcc)
@@ -211,15 +219,19 @@ class Train_data:
 
         print(str(self.wav_max_len))
         print(str(self.label_max_len))
-        self.start_read_data()
 
 
-    def Get_next_batch(self,batch_size):
+    def Get_next_batch(self,batch_size,read_new):
         label_ok=False
         mfcc_ok=False
         batch_label=[]
         batch_wav=[]
-        while label_ok==False and mfcc_ok==False:
+        if read_new:
+            print("New reader")
+            self.start_read_data()
+        else:
+            pass
+        while  mfcc_ok==False or label_ok==False:
             if(label_ok==False):
                 if (self.label_queue.qsize() == 16):
                     self.label_lock.acquire()
@@ -239,10 +251,10 @@ class Train_data:
         return batch_wav,batch_label
 
     def start_read_data(self):
-
-        self.read_label_threading = threading.Thread(target=self.readcsvdata_label, args=(self.save_labels,self.label_queue, self.label_lock))
-        self.read_mfcc_threading = threading.Thread(target=self.readcsvdata_mfcc, args=(self.save_mfcc,self.mfcc_queue, self.mfcc_lock))
-
+        self.label_queue.queue.clear()
+        self.mfcc_queue.queue.clear()
+        self.read_label_threading = threading.Thread(target=self.readcsvdata_label, args=(self.train_labels,self.label_queue, self.label_lock))
+        self.read_mfcc_threading = threading.Thread(target=self.readcsvdata_mfcc, args=(self.train_mfcc,self.mfcc_queue, self.mfcc_lock))
         self.read_label_threading.start()
         self.read_mfcc_threading.start()
 
