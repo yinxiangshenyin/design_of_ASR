@@ -42,7 +42,7 @@ new_reader=False
 with tf.Session() as sess:
     print("Start Training")
     sess.run(tf.global_variables_initializer())
-    for epoch in range(2):
+    for epoch in range(50):
         new_reader=True
         for batch in range(n_batch):
             now_time=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')

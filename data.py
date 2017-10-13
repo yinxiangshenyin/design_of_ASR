@@ -30,7 +30,7 @@ class Train_data:
     read_mfcc_threading = None
 
     save_mfcc=r'..\data for ASR\save_mfcc.csv'
-    save_labels=r'..\data for ASR\save_labels.csv'
+    save_labels=r'..\data for ASR\train_labels.csv'
     save_word_class_dict=r'..\data for ASR\save_word_class_dict.txt'
 
     test_mfcc=r'..\data for ASR\test_mfcc.csv'
@@ -253,8 +253,8 @@ class Train_data:
     def start_read_data(self):
         self.label_queue.queue.clear()
         self.mfcc_queue.queue.clear()
-        self.read_label_threading = threading.Thread(target=self.readcsvdata_label, args=(self.save_labels,self.label_queue, self.label_lock))
-        self.read_mfcc_threading = threading.Thread(target=self.readcsvdata_mfcc, args=(self.save_mfcc,self.mfcc_queue, self.mfcc_lock))
+        self.read_label_threading = threading.Thread(target=self.readcsvdata_label, args=(self.test_labels,self.label_queue, self.label_lock))
+        self.read_mfcc_threading = threading.Thread(target=self.readcsvdata_mfcc, args=(self.test_mfcc,self.mfcc_queue, self.mfcc_lock))
         self.read_label_threading.start()
         self.read_mfcc_threading.start()
 

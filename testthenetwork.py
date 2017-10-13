@@ -29,17 +29,17 @@ print("Building neural network sucessfully!")
 print("Design the CTC lost function and the optimizer..")
 
 def decode(batches_labels,output):
-    print('-------------------------------------------------')
     for j in range(len(batches_labels)):
+        print('-------------------------------------------------')
         s=""
         for i in range(len(output[j])):
             if (output[j][i] != -1):
-                 s = s + word_class[output[j][i]]
+                 s = s +" "+ word_class[output[j][i]]
         print(s)
         s = ""
         for i in range(len(batches_labels[j])):
             if int(batches_labels[j][i]) != -1:
-                s = s + word_class[int(batches_labels[j][i])]
+                s = s +" " + word_class[int(batches_labels[j][i])]
         print(s)
 
 

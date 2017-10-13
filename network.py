@@ -77,6 +77,9 @@ class Neural_network:
         residual2_layer_output = self.residual_neural_network(input=residual2_layer_output, filter_size=3,
                                                                    output_channel=128, stride=1, max_pooling=False)
 
+        residual2_layer_output = self.residual_neural_network(input=residual2_layer_output, filter_size=3,
+                                                                   output_channel=128, stride=1, max_pooling=False)
+
         residual3_layer_output = self.residual_neural_network(input=residual2_layer_output, filter_size=3,
                                                                    output_channel=256, stride=2, max_pooling=False)
 
@@ -84,15 +87,22 @@ class Neural_network:
                                                                    output_channel=256, stride=1, max_pooling=False)
 
         residual4_layer_output = self.residual_neural_network(input=residual3_layer_output, filter_size=3,
-                                                                   output_channel=512, stride=2, max_pooling=False)
-
+                                                                   output_channel=256, stride=2, max_pooling=False)
         residual4_layer_output = self.residual_neural_network(input=residual4_layer_output, filter_size=3,
-                                                                   output_channel=512, stride=1, max_pooling=False)
+                                                                   output_channel=256, stride=1, max_pooling=False)
+        residual4_layer_output = self.residual_neural_network(input=residual4_layer_output, filter_size=3,
+                                                                   output_channel=256, stride=3, max_pooling=False)
 
-        residual5_layer_output = self.residual_neural_network(input=residual4_layer_output, filter_size=3,
-                                                                   output_channel=1024, stride=3, max_pooling=False)
+        # residual4_layer_output = self.residual_neural_network(input=residual3_layer_output, filter_size=3,
+        #                                                            output_channel=512, stride=2, max_pooling=False)
+        #
+        # residual4_layer_output = self.residual_neural_network(input=residual4_layer_output, filter_size=3,
+        #                                                            output_channel=512, stride=1, max_pooling=False)
+        #
+        # residual5_layer_output = self.residual_neural_network(input=residual4_layer_output, filter_size=3,
+        #                                                            output_channel=1024, stride=3, max_pooling=False)
 
-        last_layer_output = self.convolution_2D_layer(input=residual5_layer_output, filter_size=3,
+        last_layer_output = self.convolution_2D_layer(input=residual4_layer_output, filter_size=3,
                                                            output_channel=word_class_len + 1, stride_len=1,
                                                            activation_function=False, bisa=True)
 
